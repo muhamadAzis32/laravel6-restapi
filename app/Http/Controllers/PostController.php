@@ -24,9 +24,20 @@ class PostController extends Controller
         $data = $request->all();
         $response = Post::create($data);
         return response()->json([
-            'success',
             201,
+            'success',
             $response
         ]);
     }
+
+    public function update(Request $request, Post $post)
+    {
+        $post->update($request->all());
+        return response()->json([
+            200,
+            'success updated',
+            $post,
+        ]);
+    }
+
 }
