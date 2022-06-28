@@ -10,42 +10,68 @@ class PostController extends Controller
     public function index()
     {
         $data = Post::all();
-        return response()->json($data, 200);
+
+        if (is_null($data)) {
+            return response()->json([
+                'status' => false,
+                'message' => 'Resource not found'
+            ], 404);
+        } else {
+            return response()->json([
+                'status' => true,
+                'message' => 'Success',
+                'data' => $data
+            ], 200);
+        }
     }
 
     public function show($id)
     {
         $data = Post::find($id);
-        return response()->json($data, 200);
+
+        if (is_null($data)) {
+            return response()->json([
+                'status' => false,
+                'message' => 'Resource not found'
+            ], 404);
+        } else {
+            return response()->json([
+                'status' => true,
+                'message' => 'Success',
+                'data' => $data
+            ], 200);
+        }
     }
 
     public function store(Request $request)
     {
         $data = $request->all();
         $response = Post::create($data);
+
         return response()->json([
-            201,
-            'success',
-            $response
-        ]);
+            'status' => true,
+            'message' => 'Success',
+            'data' =>  $response,
+        ], 201);
     }
 
     public function update(Request $request, Post $post)
     {
         $post->update($request->all());
         return response()->json([
-            200,
-            'success updated',
-            $post,
-        ]);
+            'status' => true,
+            'message' => 'Success',
+            'data' => $post
+        ], 200);
     }
 
-    public function destroy(Post $post)
+    public function destroy( Post $post)
     {
         $post->delete();
         return response()->json([
-            200,
-            'success deleted'
-        ]);
+            'status' => true,
+            'message' => 'Success',
+            'data' => $post
+        ], 200);
     }
 }
