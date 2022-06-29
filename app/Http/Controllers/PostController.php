@@ -3,8 +3,9 @@
 namespace App\Http\Controllers;
 
 use App\Post;
-use Illuminate\Auth\Events\Validated;
 use Illuminate\Http\Request;
+use App\Http\Controllers\Controller;
+use App\Http\Resources\Post\PostResource;
 use Illuminate\Support\Facades\Validator;
 
 class PostController extends Controller
@@ -12,19 +13,11 @@ class PostController extends Controller
     public function index()
     {
         $data = Post::all();
-
-        if (is_null($data)) {
-            return response()->json([
-                'status' => false,
-                'message' => 'Resource not found'
-            ], 404);
-        } else {
-            return response()->json([
-                'status' => true,
-                'message' => 'Success',
-                'data' => $data
-            ], 200);
-        }
+        return response()->json([
+            'status' => true,
+            'message' => 'Success',
+            'data' => $data
+        ], 200);
     }
 
     public function show($id)
@@ -36,13 +29,16 @@ class PostController extends Controller
                 'status' => false,
                 'message' => 'Resource not found'
             ], 404);
-        } else {
-            return response()->json([
-                'status' => true,
-                'message' => 'Success',
-                'data' => $data
-            ], 200);
         }
+
+        return new PostResource($data);
+
+        // TODO: tanpa custom response
+        // return response()->json([
+        //     'status' => true,
+        //     'message' => 'Success',
+        //     'data' => $data
+        // ], 200);
     }
 
     public function store(Request $request)
