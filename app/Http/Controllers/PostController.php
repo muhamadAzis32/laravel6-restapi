@@ -7,12 +7,24 @@ use Illuminate\Http\Request;
 use App\Http\Controllers\Controller;
 use App\Http\Resources\Post\PostCollection;
 use App\Http\Resources\Post\PostResource;
+use Illuminate\Support\Facades\DB;
 use Illuminate\Support\Facades\Validator;
 
 class PostController extends Controller
 {
+
+    // TOKEN
+    public function __construct()
+    {
+        $this->middleware('auth:api');
+    }
+
     public function index()
     {
+        // DB::listen(function ($query) {
+        //     var_dump($query->sql);
+        // });
+
         $data = Post::with(['user'])->paginate(5);
         return new PostCollection($data);
 
@@ -60,7 +72,9 @@ class PostController extends Controller
             ], 400);
         }
 
-        $response = Post::create($data);
+        // $response = Post::create($data); <- harus masukan id user
+        $response = request()->user()->posts()->create($data);
+
         return response()->json([
             'status' => true,
             'message' => 'Success',
